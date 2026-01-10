@@ -9,6 +9,32 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^5.16.6"
+    "@astrojs/react": "^4.4.2",
+    "@milkdown/core": "^7.17.3",
+    "@milkdown/crepe": "^7.17.3",
+    "@milkdown/ctx": "^7.17.3",
+    "@milkdown/kit": "^7.17.3",
+    "@milkdown/plugin-listener": "^7.17.3",
+    "@milkdown/plugin-upload": "^7.18.0",
+    "@milkdown/preset-commonmark": "^7.17.3",
+    "@milkdown/react": "^7.17.3",
+    "@milkdown/theme-nord": "^7.17.3",
+    "@supabase/ssr": "^0.8.0",
+    "@supabase/supabase-js": "^2.89.0",
+    "@tailwindcss/vite": "^4.1.18",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "astro": "^5.16.6",
+    "codemirror": "^6.0.2",
+    "flowbite": "^4.0.1",
+    "marked": "^17.0.1",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3"
+  },
+  "devDependencies": {
+    "autoprefixer": "^9.8.8",
+    "flowbite-typography": "^1.0.5",
+    "postcss": "^7.0.39",
+    "tailwindcss": "^4.1.18"
   }
 }

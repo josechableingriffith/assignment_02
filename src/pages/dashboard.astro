@@ -1,0 +1,112 @@
+---
+import Mainlayout from "./layouts/mainlayout.astro";
+import { marked } from "marked";
+
+
+
+import { getSupabaseServer } from "../lib/supabaseServer";
+const supabase = getSupabaseServer(Astro);
+const { data: { user } } = await supabase.auth.getUser();
+if (!user) {
+  return Astro.redirect("/login");
+}
+
+const { data: posts, count, error } = await supabase
+  .from('posts')
+  .select('*', { count: 'exact' })
+.eq('author_id', user.id)
+
+export function formatdate (posted_date): string {
+    return new Date(posted_date).toLocaleDateString("en-GB", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+} export function renderMarkdown(content?: string | null): string {
+  return content ? marked(content) : "";
+}
+
+---
+<Mainlayout title="Dash">
+    <section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5 ">
+        <div class="mx-auto max-w-screen-xl px-4 lg:px-12 pb-15">
+            <nav class="flex mb-2.5 pt-10" aria-label="Breadcrumb">
+                <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
+                    <li class="inline-flex items-center">
+                        <a href="/" class="inline-flex items-center text-sm font-medium text-body hover:text-emerald-400">
+                            <svg class="w-4 h-4 me-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m4 12 8-8 8 8M6 10.5V19a1 1 0 0 0 1 1h3v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h3a1 1 0 0 0 1-1v-8.5"/></svg>
+                            Home
+                        </a>
+                    </li>
+                    <li aria-current="page">
+                        <div class="flex items-center space-x-1.5">
+                            <svg class="w-3.5 h-3.5 rtl:rotate-180 text-body" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/></svg>
+                            <span class="inline-flex items-center text-sm font-medium text-body-subtle">Dashboard</span>
+                        </div>
+                    </li>
+                </ol>
+            </nav>
+            <h2 class="pb-8 text-3xl dark:text-white font-bold tracking-tight text-heading md:text-4xl">Manage your posts</h2>
+            <!-- Start coding here -->
+            <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
+                <div class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
+                    <div class="w-full flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
+                        <button data-modal-target="large-modal" data-modal-toggle="large-modal" class="hover:bg-emerald-900 flex items-center justify-center text-emerald-400 bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
+                            <svg class="h-3.5 w-3.5 mr-2" fill="green" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                <path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
+                            </svg>
+                            New post
+                        </button>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <tr>
+                                <th scope="col" class="px-4 py-3">Titulo</th>
+                                <th scope="col" class="px-4 py-3">Content</th>
+                                <th scope="col" class="px-4 py-3">Date</th>
+                                <th scope="col" class="px-4 py-3"><span class="sr-only">Actions</span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            { posts.map((post) => (
+                                <tr class="border-b dark:border-gray-700">
+                                    <th scope="row" class=" max-w-45 overflow-x-hidden px-4 py-3 font-medium text-gray-900 dark:text-white">
+                                        <div set:html={renderMarkdown(post.title)}></div>
+                                    </th>
+                                    <td class="px-4 py-3 max-w-120 overflow-x-hidden"><div set:html={renderMarkdown(post.preview)}></div></td>
+                                    <td class="px-4 py-3 w-40">{formatdate(post.date_posted)}</td>
+                                    <td class="px-4 py-3 flex items-center justify-end">
+                                        <div class=" z-10 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600">
+                                            <ul class="py-1 text-sm text-gray-700 dark:text-gray-200">
+                                                <li>
+                                                    <a href={"/blog/"+post.slug} target="_blank" class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">View</a>
+                                                </li>
+                                                <li>
+                                                    <a href={"/edit/"+post.slug} class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Edit</a>
+                                                </li>
+                                                <li>
+                                                    <form action="/api/post/delete" method="post">
+                                                        <input type="hidden" name="id" value={post.id}>
+                                                        <button class="delete block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Delete</button>
+                                                    </form>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}    
+                        </tbody>
+                    </table>
+                </div>
+                <nav class="flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 p-4" aria-label="Table navigation">
+                    <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
+                        Total number of posts:
+                        <span class="font-semibold text-gray-900 dark:text-white">{count}</span>
+                    </span>
+                </nav>
+            </div>
+        </div>
+    </section>    
+</Mainlayout>

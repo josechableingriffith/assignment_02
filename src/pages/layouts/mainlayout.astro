@@ -1,0 +1,43 @@
+---
+import "../../styles/global.css";
+import MainHeader from "../components/mainHeader.astro";
+import UserHeader from "../components/userHeader.astro";
+import Footer from "../components/footer.astro";
+
+const { title } = Astro.props;
+
+//Supabase
+import { getSupabaseServer } from "../../lib/supabaseServer";
+const supabase = getSupabaseServer(Astro);
+const { data: { user } } = await supabase.auth.getUser();
+const email = user?.email;
+
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../../../node_modules/flowbite/dist/flowbite.min.js"></script>
+    <title>{title}</title>
+</head>
+<body>
+    <!-- Header indicating whether the user is logged in or not -->
+	{ user ? (
+ 		<UserHeader />
+ 		) : (
+		<MainHeader />
+  		)
+	}
+    <div class="mb-25">
+            <slot></slot>
+
+    </div>
+
+    <Footer />
+    
+    <script is:inline src="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.js"></script>
+
+</body>
+</html>
