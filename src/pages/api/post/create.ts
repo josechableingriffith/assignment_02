@@ -1,7 +1,6 @@
 import { preview, type APIRoute } from "astro";
 
 import { getSupabaseServer } from "../../../lib/supabaseServer";
-import { date, date } from "astro:schema";
 
 export const POST: APIRoute = async (Astro) => {
     
