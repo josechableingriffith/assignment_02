@@ -1,6 +1,11 @@
 import type { APIRoute } from "astro";
 import { getSupabaseServer } from "../../../lib/supabaseServer";
+import { createClient } from "@supabase/supabase-js";
 
+const supabase = createClient(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_ANON_KEY!
+);
 export const POST: APIRoute = async (Astro) => {
     
 const supabase = getSupabaseServer(Astro);
