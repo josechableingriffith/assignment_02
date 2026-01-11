@@ -161,7 +161,7 @@ function firstimage(markdown: string): string | null {
   }, [postid]);
 
   return (
-      <div id="update" />
+      <div id="update"></div>
   );
 }
 

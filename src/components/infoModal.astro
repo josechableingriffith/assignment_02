@@ -1,5 +1,5 @@
 ---
-import { getSupabaseServer } from "../../lib/supabaseServer";
+import { getSupabaseServer } from "../lib/supabaseServer";
 const supabase = getSupabaseServer(Astro);
 const { data: { user } } = await supabase.auth.getUser();
 
@@ -47,7 +47,7 @@ const { data: profile, error } = await supabase
                 <label for="password" class="block mb-2.5 text-sm font-medium text-white">Password</label>
                 <input type="password" id="password" name="password" class="dark:bg-gray-500 text-white block w-full ps-3.5 pe-3 py-2.5 text-sm rounded-base focus:ring-emerald-700 focus:border-emerald-700 px-3 py-2.5 shadow-xs placeholder:text-gray-300" placeholder="************" >
             </div>
-            <button type="submit" class="w-full text-white bg-emerald-700 box-border border border-transparent hover:bg-emerald-700 focus:ring-4 focus:ring-emerald-700 shadow-xs font-medium leading-5 rounded-base text-sm px-4 mt-5 py-2.5 focus:outline-none">Send message</button>
+            <button type="submit" class="w-full text-white bg-emerald-700 box-border border border-transparent hover:bg-emerald-700 focus:ring-4 focus:ring-emerald-700 shadow-xs font-medium leading-5 rounded-base text-sm px-4 mt-5 py-2.5 focus:outline-none">Update</button>
         </form>
     </div>
 </div>
