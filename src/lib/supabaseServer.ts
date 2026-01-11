@@ -2,8 +2,8 @@ import { createServerClient, parseCookieHeader } from "@supabase/ssr";
 
 export function getSupabaseServer(Astro: any) {
   return createServerClient(
-    import.meta.env.PUBLIC_SUPABASE_URL,
-    import.meta.env.PUBLIC_SUPABASE_ANON_KEY,
+    import.meta.env.SUPABASE_URL,
+    import.meta.env.SUPABASE_ANON_KEY,
     {
       cookies: {
         get(name) {

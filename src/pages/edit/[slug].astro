@@ -3,13 +3,9 @@ import Mainlayout from "../layouts/mainlayout.astro";
 import { marked } from "marked";
 import { getSupabaseServer } from "../../lib/supabaseServer";
 
-
 const supabase = getSupabaseServer(Astro);
 
-
-
 const { slug } = Astro.params;
-
 
 const { data: posts, error } = await supabase
     .from("posts")
@@ -26,80 +22,72 @@ const id = posts.id;
 const title = marked.parse(posts.title);
 const body = marked.parse(posts.body);
 
- 
-
 let { data: comments, error: commentserror } = await supabase
-  .from('comments')
-  .select(`
+    .from('comments')
+    .select(`
     *,
     users_data (
-      name
+        name
     ),
     replies (
       *,
-      users_data (
+        users_data (
         profile_photo,
         name
-      )
+        )
     )
-  `)
-  .eq("post_commented", posts.id);
+    `)
+    .eq("post_commented", posts.id);
 
 if (commentserror) {
-  console.error("Error fetching comments:", commentserror);
+    console.error("Error fetching comments:", commentserror);
 } else {
-  console.log("Comments array:", JSON.stringify(comments, null, 2));
+    console.log("Comments array:", JSON.stringify(comments, null, 2));
 
-  comments.forEach(comment => {
+    comments.forEach(comment => {
 
     
     console.log("Comment:", comment.content_comment, "by", comment.users_data?.name );
 
     comment.replies?.forEach(reply => {
-      console.log("  Reply:", reply.content_replies, "by", reply.users_data?.name);
+        console.log("  Reply:", reply.content_replies, "by", reply.users_data?.name);
     });
-  });
+    });
 }
 
 export function formatdate (posted_date): string {
     return new Date(posted_date).toLocaleDateString("en-GB", {
-  year: "numeric",
-  month: "long",
-  day: "numeric",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
 });
 } 
 
 import MilkdownUpdate from "../../components/MilkdownUpdate"
 ---
 
-<Mainlayout>
+<Mainlayout title={slug}>
 
-                        <div id={id} tabindex="-1" data-modal-backdrop="static" class="fixed top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full justify-center items-center flex bg-dark-backdrop/70 fixed inset-0 z-40">
-                                    <div class="relative w-full max-w-4xl max-h-full">
-                                <div class="relative bg-neutral-primary-soft border border-default rounded-base shadow-sm p-4 md:p-6">
-                                            <!-- Modal header -->
-                                            <div class="flex items-center justify-between border-b border-default pb-4 md:pb-5">
-                                                <h3 class="text-lg font-medium text-heading">
-                                                    Update your review
-                                                </h3>
-                                                <a href={"/blog/"+slug} class="text-body bg-transparent hover:bg-neutral-tertiary hover:text-heading rounded-base text-sm w-9 h-9 ms-auto inline-flex justify-center items-center">
-                                                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/></svg>
-                                                    <span class="sr-only">Close modal</span>
-                                                </a>
-                                            </div>
-                                            <!-- Modal body -->
-                                            <div id="update" class="space-y-4 md:space-y-6 py-4 md:py-6">
-                                                <MilkdownUpdate client:load postid={id} />
-                                            </div>
-                                            <!-- Modal footer -->
-                                            <div class="flex items-center border-t border-default space-x-4 pt-4 md:pt-5">
-                                                <button id="updateBtn" class="text-white bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">Update</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+<div id={id} tabindex="-1" data-modal-backdrop="static" class="fixed top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full justify-center items-center flex bg-dark-backdrop/70 fixed inset-0 z-40">
+    <div class="relative w-full max-w-4xl max-h-full">
+        <div class="relative bg-neutral-primary-soft border border-default rounded-base shadow-sm p-4 md:p-6">
+            <div class="flex items-center justify-between border-b border-default pb-4 md:pb-5">
+                <h3 class="text-lg font-medium text-heading">Update your review</h3>
+                <a href={"/blog/"+slug} class="text-body bg-transparent hover:bg-neutral-tertiary hover:text-heading rounded-base text-sm w-9 h-9 ms-auto inline-flex justify-center items-center">
+                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/></svg>
+                    <span class="sr-only">Close modal</span>
+                </a>
+            </div>
+            <div id="update" class="space-y-4 md:space-y-6 py-4 md:py-6">
+                <MilkdownUpdate client:load postid={id} />
+            </div>
+            <div class="flex items-center border-t border-default space-x-4 pt-4 md:pt-5">
+                <button id="updateBtn" class="text-white bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-                                
 <main class="pt-8 pb-16 lg:pt-16 lg:pb-24 bg-gray-900 antialiased">
     <div class="flex justify-between px-4 mx-auto max-w-screen-xl">
         <article class="mx-auto w-full max-w-2xl not-format text-white">
@@ -140,7 +128,6 @@ import MilkdownUpdate from "../../components/MilkdownUpdate"
                 </form>
             </section> 
                 
-            <!-- Comments -->
             {comments.map((single_comment) => (
                 
             <article class="p-6 mb-6 text-base bg-white rounded-lg dark:bg-gray-900">

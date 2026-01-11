@@ -1,13 +1,15 @@
 ---
 import { getSupabaseServer } from "../lib/supabaseServer";
+
 const supabase = getSupabaseServer(Astro);
+
 const { data: { user } } = await supabase.auth.getUser();
 
 const { data: profile, error } = await supabase
-  .from('users_data')
-  .select('*')
-.eq('id', user.id)
-.single();
+    .from('users_data')
+    .select('*')
+    .eq('id', user.id)
+    .single();
 
 ---
 

@@ -1,17 +1,16 @@
 ---
 import { Milkdown } from "../components/milkdown";
-
-// SUPABASE
 import { getSupabaseServer } from "../lib/supabaseServer";
 import InfoModal from "./infoModal.astro";
+
 const supabase = getSupabaseServer(Astro);
 
 const { data: { user } } = await supabase.auth.getUser();
 const { data: profile, error } = await supabase
-  .from("users_data")
-  .select("*")
-  .eq("id", user.id)
-  .single();
+    .from("users_data")
+    .select("*")
+    .eq("id", user.id)
+    .single();
 
 const email = user?.email;
 const name = profile?.name;
@@ -41,7 +40,7 @@ const last_name = profile?.last_name;
                 <span class="sr-only">Open user menu</span>
                 <img class="rounded w-12 h-12 object-cover hover:o-0" src={profile.profile_photo?? "/profile-photo.webp"} alt="image description">
             </button>
-            <!-- Dropdown menu -->
+
             <div class="hidden z-39 my-4 w-56 text-base list-none bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600" id="dropdown">
                 <div class="py-3 px-4">
                     <span class="block text-sm font-semibold text-gray-900 dark:text-white">{"Hi, "+name+" "+last_name}</span>
@@ -77,9 +76,7 @@ const last_name = profile?.last_name;
     
     <div id="large-modal" tabindex="-1" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
         <div class="relative w-full max-w-4xl max-h-full">
-            <!-- Modal content -->
             <div class="relative bg-neutral-primary-soft border border-default rounded-base shadow-sm p-4 md:p-6">
-                <!-- Modal header -->
                 <div class="flex items-center justify-between border-b border-default pb-4 md:pb-5">
                     <h3 class="text-lg font-medium text-heading">
                         Create new review
@@ -89,13 +86,11 @@ const last_name = profile?.last_name;
                         <span class="sr-only">Close modal</span>
                     </button>
                 </div>
-                <!-- Modal body -->
                 <div class="space-y-4 md:space-y-6 py-4 md:py-6">
                     <div id="app">
                         <Milkdown client:only="react"/>
                     </div>
                 </div>
-                <!-- Modal footer -->
                 <div class="flex items-center border-t border-default space-x-4 pt-4 md:pt-5">
                     <button data-modal-hide="default-modal" id="saveBtn" class="text-white bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">Post</button>
                 </div>

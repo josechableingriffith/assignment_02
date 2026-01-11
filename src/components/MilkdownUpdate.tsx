@@ -1,25 +1,20 @@
-// Supabase
 import { createClient } from "@supabase/supabase-js";
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_ANON_KEY!
-);
-
-// React
 
 import { useEffect, useRef, useState } from "react";
 
-// Milkdown
 import "@milkdown/crepe/theme/common/style.css";
 import "@milkdown/crepe/theme/nord.css";
 import { Crepe } from "@milkdown/crepe";
 
-// Id post to edit
+const supabase = createClient(
+  import.meta.env.PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL!,
+  import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? process.env.SUPABASE_ANON_KEY!
+);
+
 type MilkdownProps = {
   postid: string;
 };
 
-// Brake title and body
 function splitTitleFromBody(markdown: string) {
   const lines = markdown.split("\n");
   let title = "";
@@ -37,9 +32,6 @@ function splitTitleFromBody(markdown: string) {
   const body = bodyLines.join("\n").trim();
   return { title, body };
 }
-
-
-// Upload images to supabase
 
 const handleImageUpload = async (file : File) => {
   const ext = file.name.split(".").pop();
@@ -59,10 +51,6 @@ const handleImageUpload = async (file : File) => {
   return data.publicUrl;
 };
 
-
-
-
-// Get post data
 
 export default function MilkdownUpdate({ postid }: MilkdownProps) {
   useEffect(() => {
@@ -97,40 +85,29 @@ export default function MilkdownUpdate({ postid }: MilkdownProps) {
       });
 
       await crepe.create();
-      // Save
 
 document.getElementById("updateBtn").addEventListener("click", async () => {
   const markdown = crepe.getMarkdown();
-  
   const { title, body } = splitTitleFromBody(markdown);
-  // Get Excerpt
-function getExcerpt(markdown: string, maxLines = 2) {
+
+  function getExcerpt(markdown: string, maxLines = 2) {
     return markdown
-      // quitar imágenes
       .replace(/!\[.*?\]\(.*?\)/g, "")
-      // quitar títulos
       .replace(/^#+\s.*$/gm, "")
-      // dividir por líneas
       .split("\n")
-      // limpiar líneas vacías
       .map(l => l.trim())
       .filter(Boolean)
-      // tomar solo las primeras líneas
       .slice(0, maxLines)
       .join(" ");
   }
   const excerpt = getExcerpt(body, 2);
 
-
-  // Get cover
 function firstimage(markdown: string): string | null {
   if (!markdown) return null;
   const match = markdown.match(/!\[.*?\]\((.*?)\)/);
   return match ? match[1] : null;
 }
   const cover = firstimage(markdown);
-
-
 
   const formData = new FormData();
     formData.append("title", title);
@@ -146,13 +123,11 @@ function firstimage(markdown: string): string | null {
     body: formData,
   });
   if (!res.ok) {
-    alert("Error al guardar");
+    alert("Error saving");
     return;
   }
   window.location.href = "/dashboard";
-
-
-});
+  });
 
 
     };

@@ -6,7 +6,6 @@ import Footer from "../../components/footer.astro";
 
 const { title } = Astro.props;
 
-//Supabase
 import { getSupabaseServer } from "../../lib/supabaseServer";
 const supabase = getSupabaseServer(Astro);
 const { data: { user } } = await supabase.auth.getUser();
@@ -24,7 +23,6 @@ const email = user?.email;
     <link rel="icon" type="image/x-icon" href="/favicon.png">
 </head>
 <body>
-    <!-- Header indicating whether the user is logged in or not -->
 	{ user ? (
  		<UserHeader />
  		) : (
