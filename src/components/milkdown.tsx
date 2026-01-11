@@ -12,6 +12,7 @@ const supabase = createClient(
 );
 
 
+export function Milkdown() {
 
 
 // Funció para separar titulo y cuerpo
@@ -84,7 +85,7 @@ crepe.on((listener) => {
 
 
 
-await crepe.create();
+crepe.create();
 
 // Botó para guardar
 
@@ -142,3 +143,5 @@ const formData = new FormData();
 
 
 });
+}
+export default Milkdown;
