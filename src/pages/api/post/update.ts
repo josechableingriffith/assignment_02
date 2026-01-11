@@ -1,14 +1,9 @@
 import type { APIRoute } from "astro";
 import { getSupabaseServer } from "../../../lib/supabaseServer";
 
-export const POST: APIRoute = async (Astro) => {
-    import { createClient } from '@supabase/supabase-js';
+export const POST: APIRoute = async ({ request }) => {
+  const supabase = getSupabaseServer({ request });
 
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_ANON_KEY!
-);
-const supabase = getSupabaseServer(Astro);
 const { data: { user }, error: authError,} = await supabase.auth.getUser();
 const { data: profile, error } = await supabase
   .from("users_data")
