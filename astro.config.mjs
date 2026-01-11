@@ -17,5 +17,10 @@ export default defineConfig({
 
   vite: {
     plugins: [tailwindcss()],
+    build: {
+      rollupOptions: {
+        external: ['fs', 'path'] // add any Node-only modules the error reports
+      }
+    }
   },
 })
